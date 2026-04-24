@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>I Love You ❤️</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ff6b9d, #ff1744, #c2185b);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Georgia', serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── Floating hearts background ── */
+    .hearts-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .heart-particle {
+      position: absolute;
+      bottom: -60px;
+      font-size: 1.5rem;
+      animation: floatUp linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes floatUp {
+      0%   { transform: translateY(0) rotate(0deg);   opacity: 1; }
+      80%  { opacity: 0.8; }
+      100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ── Pop-up heart ── */
+    .popup-heart {
+      font-size: 8rem;
+      z-index: 1;
+      animation: popHeart 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
+                 pulse 1.5s ease-in-out 1.2s infinite;
+      transform: scale(0);
+      filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.6));
+    }
+
+    @keyframes popHeart {
+      0%   { transform: scale(0) rotate(-15deg); }
+      60%  { transform: scale(1.3) rotate(10deg); }
+      80%  { transform: scale(0.9) rotate(-5deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.1); }
+    }
+
+    /* ── Bouncing "I Love You" text ── */
+    .love-text {
+      margin-top: 24px;
+      font-size: 3.5rem;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 2px 4px 12px rgba(0, 0, 0, 0.3),
+                   0 0 30px rgba(255, 200, 220, 0.8);
+      letter-spacing: 4px;
+      z-index: 1;
+      display: flex;
+      gap: 2px;
+    }
+
+    .love-text span {
+      display: inline-block;
+      animation: bounce 0.6s ease infinite alternate;
+    }
+
+    /* stagger each letter */
+    .love-text span:nth-child(1)  { animation-delay: 0.00s; }
+    .love-text span:nth-child(2)  { animation-delay: 0.05s; }
+    .love-text span:nth-child(3)  { animation-delay: 0.10s; }
+    .love-text span:nth-child(4)  { animation-delay: 0.15s; }
+    .love-text span:nth-child(5)  { animation-delay: 0.20s; }
+    .love-text span:nth-child(6)  { animation-delay: 0.25s; }
+    .love-text span:nth-child(7)  { animation-delay: 0.30s; }
+    .love-text span:nth-child(8)  { animation-delay: 0.35s; }
+    .love-text span:nth-child(9)  { animation-delay: 0.40s; }
+    .love-text span:nth-child(10) { animation-delay: 0.45s; }
+
+    @keyframes bounce {
+      from { transform: translateY(0);    }
+      to   { transform: translateY(-18px); }
+    }
+
+    /* ── Subtitle ── */
+    .subtitle {
+      margin-top: 20px;
+      font-size: 1.4rem;
+      color: rgba(255, 255, 255, 0.85);
+      text-align: center;
+      letter-spacing: 2px;
+      z-index: 1;
+      animation: fadeInUp 1.5s ease 1s both;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Floating hearts background -->
+  <div class="hearts-bg" id="heartsBg"></div>
+
+  <!-- Pop-up heart sign -->
+  <div class="popup-heart">❤️</div>
+
+  <!-- Bouncing "I Love You" letters -->
+  <div class="love-text" id="loveText"></div>
+
+  <!-- Subtitle -->
+  <p class="subtitle">Forever &amp; Always 💕</p>
+
+  <script>
+    // Build bouncing letters
+    const text = 'I Love You';
+    const container = document.getElementById('loveText');
+    text.split('').forEach(ch => {
+      const span = document.createElement('span');
+      span.textContent = ch === ' ' ? '\u00A0' : ch;
+      container.appendChild(span);
+    });
+
+    // Create floating heart particles
+    const bg = document.getElementById('heartsBg');
+    const heartEmojis = ['❤️', '💕', '💖', '💗', '💓', '💞', '🩷'];
+
+    function spawnHeart() {
+      const el = document.createElement('div');
+      el.className = 'heart-particle';
+      el.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
+      const duration = Math.random() * 5 + 5;
+      el.style.animationDuration = duration + 's';
+      el.style.animationDelay = Math.random() * 3 + 's';
+      bg.appendChild(el);
+      // Remove element after animation to avoid DOM bloat
+      setTimeout(() => el.remove(), (duration + 3) * 1000);
+    }
+
+    // Initial burst of hearts
+    for (let i = 0; i < 20; i++) spawnHeart();
+
+    // Keep spawning hearts continuously
+    setInterval(spawnHeart, 600);
+  </script>
+</body>
+</html>
